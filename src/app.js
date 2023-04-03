@@ -1,11 +1,14 @@
 
 // Requires 
+
 const express = require('express');
 const env = require('dotenv');
 const path = require('path');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const _ = require('lodash');
+const fetch = (...args) =>
+	import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 // Config env
 env.config();
@@ -30,24 +33,14 @@ app.use(
         directives: {
             "script-src": ["'self'", "https://cdn.jsdelivr.net"],
             "style-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://fonts.googleapis.com"],
-            "script-src-elem": ["'self'", "https://cdn.jsdelivr.net"],
+            "script-src-elem": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
             "img-src": ["'self'", "data:"],
         },
     })
 );
 
 
-// const url = `https://api.openweathermap.org/data/2.5/weather?lat=${res.get('location')}&lon=${geoLng}&units=imperial&appid=${api}`;
-// const api = "3e38aab197a9815156e4c68dac537867aaaaaa";
-// async function getWeather(url) {
-//     try {
-//         const weather = await fetch(url).json();
-//         console.info(weather);
-//         return weather;
-//     } catch (err) {
-//         console.error("error:", err);
-//     }
-// }
+
 
 
 
@@ -60,6 +53,21 @@ title = {
 app.get('/', (req, res) => {
 
     res.render('index', { title });
+});
+
+app.get('/location/:lat/:lon', (req, res) => {
+    const lat = req.params.lat;
+    const lon = req.params.lon;
+
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=imperial&appid=${process.env.OPEN_WEATHER_API}`;
+
+    console.log(url);
+    fetch(url)
+    .then((res)=> res.json())
+    .then((data)=>  res.json({ city: data.name, temp: Math.round(data.main.temp)+'\u2109'}))
+    .catch((e)=>console.log(e));
+   
+
 });
 
 app.post('/register', (req, res) => {
