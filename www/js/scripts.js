@@ -39,7 +39,7 @@ window.addEventListener('DOMContentLoaded', event => {
 
         // Fetch all the forms we want to apply custom Bootstrap validation styles to
         var forms = document.querySelectorAll('.needs-validation')
-        console.log("hello");
+
         // Loop over them and prevent submission
         Array.prototype.slice.call(forms)
             .forEach(function (form) {

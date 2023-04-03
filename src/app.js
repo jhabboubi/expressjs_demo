@@ -1,8 +1,14 @@
 const express = require('express');
+const path = require('path');
 var helmet = require('helmet');
 var morgan = require('morgan');
 
 const app = express();
+console.log(__dirname)
+app.set('views', 'www/views');
+app.use("/css", express.static('www/css'));
+app.use("/assets", express.static('www/assets'));
+app.use("/js", express.static('www/js'));
 app.use(helmet());
 app.use(morgan('tiny'));
 app.set('view engine', 'ejs');
@@ -19,9 +25,7 @@ app.use(
     })
 );
 
-app.use('/css', express.static(__dirname + '/css'));
-app.use('/assets', express.static(__dirname + '/assets'));
-app.use('/js', express.static(__dirname + '/js'));
+
 
 
 // const url = `https://api.openweathermap.org/data/2.5/weather?lat=${res.get('location')}&lon=${geoLng}&units=imperial&appid=${api}`;
